@@ -7,7 +7,8 @@ matching.
 
 Corner cases:
 - An empty expression is True.
-- An unexpected end of stream is False.
+- An unexpected end of stream (more opens than closes) is False.
+- An unexpected pop from empty stack (more closes than opens) is False.
 
 Overview of algorithm:
 - Use a stack. Loop through each character.
@@ -25,6 +26,7 @@ def checkBraceMatch(strToCheck):
         if cha in "({[": # its an open, push
             stack.append(cha)
         if cha in ")}]": # its a close, pop
+            if len(stack) == 0: return False
             match = stack.pop()
             if match == "(" and cha != ")": return False
             if match == "{" and cha != "}": return False
@@ -38,8 +40,9 @@ testA = checkBraceMatch("()(())([{}]){[]}") == True  # correct braces
 testB = checkBraceMatch("()(())([{})){[]}") == False # incorrect braces
 testC = checkBraceMatch("") == True
 testD = checkBraceMatch("((()") == False
+testE = checkBraceMatch("())") == False
 
-if testA and testB and testC and testD:
+if testA and testB and testC and testD and testE:
     print("Tests pass")
 else:
     print("Tests fail");
